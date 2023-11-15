@@ -1,3 +1,4 @@
+import { LoginScreen } from 'feature/presentation';
 import { createBrowserRouter } from 'react-router-dom';
 
 import { ProtectedRoute } from './protectedRoute';
@@ -5,7 +6,15 @@ import { ProtectedRoute } from './protectedRoute';
 export const browserRouter = createBrowserRouter([
   {
     path: '/',
-    Component: () => <div>Home</div>
+    Component: () => (
+      <ProtectedRoute>
+        <div>Home</div>
+      </ProtectedRoute>
+    )
+  },
+  {
+    path: '/login',
+    Component: LoginScreen
   },
   {
     path: '/about',
