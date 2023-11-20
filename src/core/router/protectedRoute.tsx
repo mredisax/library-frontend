@@ -11,20 +11,25 @@ interface Props {
 
 export const ProtectedRoute = ({ children }: Props): JSX.Element => {
   const userStore = useAppSelector((state) => state.user.value);
-  const [localUser] = useLocalStorage<UserProfile | null>('user', null);
+  const [localUser, , refetchValue] = useLocalStorage<UserProfile | null>('user', null);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!userStore) {
-      if (localUser) {
-        // TODO: Perform token validation here
-        dispatch(setUser(localUser));
-      } else {
-        navigate('/login');
-      }
+    if (localUser) {
+      // TODO: Perform token validation here
+
+      if (!userStore) dispatch(setUser(localUser));
+    } else {
+      navigate('/login');
     }
-  }, []);
+  }, [localUser]);
+
+  useEffect(() => {
+    if (!userStore) {
+      refetchValue();
+    }
+  }, [userStore]);
 
   return children;
 };
