@@ -1,0 +1,15 @@
+version: "3.2"
+services:
+  app:
+    container_name: library-frontend
+    restart: always
+    build: .
+    #    env_file: 
+    # - .env
+    ports:
+      - "8888:3000"
+ 
+networks:
+  default:
+    external:
+      name: library
