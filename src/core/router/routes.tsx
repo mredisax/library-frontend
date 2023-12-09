@@ -1,4 +1,4 @@
-import { LoginScreen } from 'feature/auth/presentation';
+import { LoginScreen, RegisterScreen } from 'feature/auth/presentation';
 import { DashboardScreen } from 'feature/dashboard/presentation';
 import { createBrowserRouter } from 'react-router-dom';
 
@@ -16,6 +16,10 @@ export const browserRouter = createBrowserRouter([
   {
     path: '/login',
     Component: LoginScreen
+  },
+  {
+    path: '/register',
+    Component: RegisterScreen
   },
   {
     path: '/about',
