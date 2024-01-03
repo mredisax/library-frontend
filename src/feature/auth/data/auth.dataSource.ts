@@ -1,25 +1,39 @@
-import { UserCredentials, UserProfile } from 'core/types';
-
-import { users } from './mockedData';
+import axios from 'axios';
+import { serverUrl } from 'core/config';
+import { UserCredentials, UserProfile, UserRegisterCredentials } from 'core/types';
 
 export const login = async ({ email, password }: UserCredentials): Promise<UserProfile> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const user = users.find(
-        (mockedUser) => mockedUser.email === email && mockedUser.password === password
-      );
-
-      if (user) {
-        resolve({
-          email: user.email,
-          id: user.id,
-          lastname: user.lastname,
-          name: user.name,
-          token: '1234567890'
-        });
-      } else {
-        reject(new Error('Invalid credentials'));
-      }
-    }, 1000);
+  const response = await axios.post(`${serverUrl}/auth/login`, {
+    email,
+    password
   });
+
+  if (response.data.statusCode === 401) {
+    throw new Error('Invalid credentials');
+  }
+
+  return {
+    email,
+    token: response.data.access_token
+  };
+};
+
+export const register = async ({
+  name,
+  lastname,
+  email,
+  password,
+  phone
+}: UserRegisterCredentials): Promise<void> => {
+  const response = await axios.post(`${serverUrl}/auth/register`, {
+    name,
+    lastname,
+    email,
+    password,
+    phone
+  });
+
+  if (response.data.statusCode === 401) {
+    throw new Error('Invalid credentials');
+  }
 };

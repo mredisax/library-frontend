@@ -9,5 +9,5 @@ export const modalStyle = {
   boxShadow: 24,
   p: 4,
   borderRadius: 4,
-  alignItems: 'center',
+  alignItems: 'center'
 };

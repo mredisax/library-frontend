@@ -1,63 +1,84 @@
+import { Close as CloseIcon, Search as SearchIcon } from '@mui/icons-material';
 import {
   AppBar,
-  Toolbar,
-  Typography,
-  Paper,
-  Grid,
-  TextField,
+  Box,
   Button,
-  TableContainer,
+  Grid,
+  IconButton,
+  Modal,
+  Paper,
+  Snackbar,
   Table,
+  TableBody,
+  TableCell,
+  TableContainer,
   TableHead,
   TableRow,
-  TableCell,
-  TableBody,
-  Modal,
-  Box,
-  IconButton,
-  Snackbar,
+  TextField,
+  Toolbar,
   Tooltip,
+  Typography
 } from '@mui/material';
+// import { UserContext } from '../../core/context/UserContext';
+import { useLocalStorage } from 'core/localStorage/localStorage.hook';
 import { Paperbase } from 'core/paperbase/presentation';
-import { Search as SearchIcon, Close as CloseIcon } from '@mui/icons-material';
+import { UserProfile } from 'core/types';
 import { IAuthor } from 'core/types/author.types';
-import { useContext, useState } from 'react';
 import { IBook } from 'core/types/book.types';
-import { useBooksData } from './hooks/useBooksData.hook';
-import { useAuthorsData } from './hooks/useAuthorsData.hook';
-import { filterBook } from '../services/filterBook';
-import { useCanBookBeReserved } from './hooks/useCanBookBeReserved.hook';
-import { modalStyle } from './constants';
 // import axios from 'axios';
 // import { serverAddress } from '../../core/config/server';
 import { format } from 'date-fns';
-// import { UserContext } from '../../core/context/UserContext';
-import { useLocalStorage } from 'core/localStorage/localStorage.hook';
-import { UserProfile } from 'core/types';
+import { ReactNode, useState } from 'react';
+import { type JSX } from 'react';
+
+import { modalStyle } from '../data/constants';
+import { filterBook } from '../services/filterBook';
+import { useAuthorsData } from './hooks/useAuthorsData.hook';
+import { useBooksData } from './hooks/useBooksData.hook';
+import { useCanBookBeReserved } from './hooks/useCanBookBeReserved.hook';
+
+const Loader = ({
+  isLoading,
+  children
+}: {
+  isLoading: boolean;
+  children: JSX.Element;
+}): ReactNode => {
+  if (isLoading) {
+    return (
+      <div>
+        <Typography>Loading...</Typography>
+      </div>
+    );
+  }
+
+  return children;
+};
 
 export const DashboardScreen = (): JSX.Element => {
   const [isBorrowModalOpen, setIsBorrowModalOpen] = useState(false);
   const [reservedBook, setReservedBook] = useState<IBook | null>(null);
   const [reservedAuthor, setReservedAuthor] = useState<IAuthor | null>(null);
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedDate] = useState<Date>(new Date());
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [searchData, setSearchData] = useState('');
   const { books } = useBooksData();
   const { authors } = useAuthorsData();
-  const { canBookBeReserved, isFetching, reservationDueDate } =
-    useCanBookBeReserved(reservedBook, selectedDate);
+  const { canBookBeReserved, isFetching, reservationDueDate } = useCanBookBeReserved(
+    reservedBook,
+    selectedDate
+  );
   const [localUser] = useLocalStorage<UserProfile | null>('user', null);
 
   const reserveBook = async () => {
-
     if (!reservedBook || !localUser) {
       return;
     }
 
     // TODO: check reservation
 
-    let random = Math.round(Math.random()); // TODO: this is only mockup. Remove it later.
+    const random = Math.round(Math.random()); // TODO: this is only mockup. Remove it later.
 
     if (random) {
       setSnackbarMessage('Book reserved successfully!');
@@ -80,8 +101,7 @@ export const DashboardScreen = (): JSX.Element => {
             position="static"
             color="default"
             elevation={0}
-            sx={{ borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}
-          >
+            sx={{ borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}>
             <Toolbar>
               <Grid container spacing={2} alignItems="center">
                 <Grid item>
@@ -93,7 +113,7 @@ export const DashboardScreen = (): JSX.Element => {
                     placeholder="Search through books by title, author or ISBN"
                     InputProps={{
                       disableUnderline: true,
-                      sx: { fontSize: 'default' },
+                      sx: { fontSize: 'default' }
                     }}
                     variant="standard"
                     onChange={(e) => {
@@ -140,13 +160,13 @@ export const DashboardScreen = (): JSX.Element => {
                         ISBN
                       </Typography>
                     </TableCell>
-                    <TableCell></TableCell>
+                    <TableCell />
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {books.map((book) => {
                     const author: IAuthor | undefined = authors.find(
-                      (author) => author.id === book.author_id
+                      (_author) => _author.id === book.author_id
                     );
 
                     if (!filterBook(book, author, searchData)) return null;
@@ -165,8 +185,7 @@ export const DashboardScreen = (): JSX.Element => {
                               setReservedBook(book);
                               setReservedAuthor(author ?? null);
                               setIsBorrowModalOpen(true);
-                            }}
-                          >
+                            }}>
                             <Typography variant="button">RESERVE</Typography>
                           </Button>
                         </TableCell>
@@ -179,10 +198,7 @@ export const DashboardScreen = (): JSX.Element => {
           </Grid>
         </Paper>
       </Paperbase>
-      <Modal
-        open={isBorrowModalOpen}
-        onClose={() => setIsBorrowModalOpen(false)}
-      >
+      <Modal open={isBorrowModalOpen} onClose={() => setIsBorrowModalOpen(false)}>
         <Box sx={modalStyle}>
           <Grid container spacing={1} sx={{ width: 600 }}>
             <Grid item>
@@ -192,8 +208,7 @@ export const DashboardScreen = (): JSX.Element => {
             </Grid>
             <Grid item xs>
               <Typography variant="h5" fontWeight={300}>
-                - {reservedAuthor?.name} {reservedAuthor?.lastname} (
-                {reservedBook?.year})
+                - {reservedAuthor?.name} {reservedAuthor?.lastname} ({reservedBook?.year})
               </Typography>
             </Grid>
             <Grid item xs={1}>
@@ -223,9 +238,8 @@ export const DashboardScreen = (): JSX.Element => {
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              flexWrap: 'nowrap',
-            }}
-          >
+              flexWrap: 'nowrap'
+            }}>
             {/* <Grid item>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DatePicker
@@ -235,36 +249,29 @@ export const DashboardScreen = (): JSX.Element => {
               </LocalizationProvider>
             </Grid> */}
             <Grid item>
-              {isFetching ? (
-                <div>
-                  <Typography>Loading...</Typography>
-                </div>
-              ) : canBookBeReserved ? (
-                <Tooltip
-                  title={!localUser ? 'You must login first.' : ''}
-                  disableInteractive={localUser !== undefined}
-                >
-                  <span>
-                    <Button
-                      variant="contained"
-                      onClick={() => reserveBook()}
-                      disabled={localUser === null}
-                    >
-                      <Typography variant="button">RESERVE</Typography>
-                    </Button>
-                  </span>
-                </Tooltip>
-              ) : (
-                <Box>
-                  <Typography variant="subtitle1" fontWeight={500}>
-                    This book is already reserved due to{' '}
-                    {format(
-                      reservationDueDate ?? new Date(Date.now()),
-                      'dd/MM/yyyy'
-                    )}
-                  </Typography>
-                </Box>
-              )}
+              <Loader isLoading={isFetching}>
+                {canBookBeReserved ? (
+                  <Tooltip
+                    title={!localUser ? 'You must login first.' : ''}
+                    disableInteractive={localUser !== undefined}>
+                    <span>
+                      <Button
+                        variant="contained"
+                        onClick={() => reserveBook()}
+                        disabled={localUser === null}>
+                        <Typography variant="button">RESERVE</Typography>
+                      </Button>
+                    </span>
+                  </Tooltip>
+                ) : (
+                  <Box>
+                    <Typography variant="subtitle1" fontWeight={500}>
+                      This book is already reserved due to{' '}
+                      {format(reservationDueDate ?? new Date(Date.now()), 'dd/MM/yyyy')}
+                    </Typography>
+                  </Box>
+                )}
+              </Loader>
             </Grid>
           </Grid>
         </Box>
