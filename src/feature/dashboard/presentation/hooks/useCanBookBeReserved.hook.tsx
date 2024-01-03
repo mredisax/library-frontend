@@ -1,14 +1,13 @@
-import { useEffect, useState } from 'react';
-import { getCanBookBeReserved } from '../../services/reserveBook';
 import { IBook } from 'core/types/book.types';
+import { useEffect, useState } from 'react';
+
+import { getCanBookBeReserved } from '../../services/reserveBook';
 
 export const useCanBookBeReserved = (
   book: IBook | null,
   startDate: Date = new Date(Date.now())
 ) => {
-  const [canBookBeReserved, setCanBookBeReserved] = useState<boolean | null>(
-    null
-  );
+  const [canBookBeReserved, setCanBookBeReserved] = useState<boolean | null>(null);
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [reservationDueDate, setReservationDueDate] = useState<Date | null>();
 

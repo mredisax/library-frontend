@@ -28,7 +28,7 @@ import { IBook } from 'core/types/book.types';
 // import axios from 'axios';
 // import { serverAddress } from '../../core/config/server';
 import { format } from 'date-fns';
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import { type JSX } from 'react';
 
 import { modalStyle } from '../data/constants';
@@ -43,7 +43,7 @@ const Loader = ({
 }: {
   isLoading: boolean;
   children: JSX.Element;
-}): ReactNode => {
+}): JSX.Element => {
   if (isLoading) {
     return (
       <div>

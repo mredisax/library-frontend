@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
 import { IBook } from 'core/types/book.types';
+import { useEffect, useState } from 'react';
+
 import { books as mockedBooks } from '../../data/mockedData';
 
 export const useBooksData = () => {

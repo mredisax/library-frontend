@@ -16,6 +16,8 @@ export const useAuthorsData = () => {
   }, []);
 
   const addAuthor = async (firstName: string, lastName: string) => {
+    console.log(firstName, lastName);
+
     // TODO: add author to database
     refreshAuthorsData();
   };
