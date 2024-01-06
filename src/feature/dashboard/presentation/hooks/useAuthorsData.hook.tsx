@@ -1,5 +1,5 @@
 // import axios from 'axios';
-import { IAuthor } from 'core/types/author.types';
+import { IAuthor } from 'core/types';
 import { useEffect, useState } from 'react';
 
 import { authors as mockedAuthors } from '../../data/mockedData';

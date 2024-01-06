@@ -22,16 +22,14 @@ import {
 // import { UserContext } from '../../core/context/UserContext';
 import { useLocalStorage } from 'core/localStorage/localStorage.hook';
 import { Paperbase } from 'core/paperbase/presentation';
-import { UserProfile } from 'core/types';
-import { IAuthor } from 'core/types/author.types';
-import { IBook } from 'core/types/book.types';
+import { IAuthor, IBook, UserProfile } from 'core/types';
 // import axios from 'axios';
 // import { serverAddress } from '../../core/config/server';
 import { format } from 'date-fns';
 import { useState } from 'react';
 import { type JSX } from 'react';
 
-import { modalStyle } from '../data/constants';
+import { modalStyle } from '../../../core/data/constants';
 import { filterBook } from '../services/filterBook';
 import { useAuthorsData } from './hooks/useAuthorsData.hook';
 import { useBooksData } from './hooks/useBooksData.hook';
@@ -166,7 +164,7 @@ export const DashboardScreen = (): JSX.Element => {
                 <TableBody>
                   {books.map((book) => {
                     const author: IAuthor | undefined = authors.find(
-                      (_author) => _author.id === book.author_id
+                      (_author) => _author.id === book.author.id
                     );
 
                     if (!filterBook(book, author, searchData)) return null;
@@ -174,7 +172,7 @@ export const DashboardScreen = (): JSX.Element => {
                       <TableRow key={book.id}>
                         <TableCell>{book.id}</TableCell>
                         <TableCell>{book.title}</TableCell>
-                        <TableCell>{`${author?.name} ${author?.lastname}`}</TableCell>
+                        <TableCell>{`${author?.name} ${author?.lastName}`}</TableCell>
                         <TableCell>{book.year}</TableCell>
                         <TableCell>{book.category}</TableCell>
                         <TableCell>{book.isbn}</TableCell>
@@ -208,7 +206,7 @@ export const DashboardScreen = (): JSX.Element => {
             </Grid>
             <Grid item xs>
               <Typography variant="h5" fontWeight={300}>
-                - {reservedAuthor?.name} {reservedAuthor?.lastname} ({reservedBook?.year})
+                - {reservedAuthor?.name} {reservedAuthor?.lastName} ({reservedBook?.year})
               </Typography>
             </Grid>
             <Grid item xs={1}>
