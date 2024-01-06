@@ -13,6 +13,7 @@ export const login = async ({ email, password }: UserCredentials): Promise<UserP
   }
 
   return {
+    id: response.data.userId,
     email,
     token: response.data.access_token
   };

@@ -19,12 +19,11 @@ import {
   Tooltip,
   Typography
 } from '@mui/material';
-// import { UserContext } from '../../core/context/UserContext';
+import axios from 'axios';
+import { serverUrl } from 'core/config';
 import { useLocalStorage } from 'core/localStorage/localStorage.hook';
 import { Paperbase } from 'core/paperbase/presentation';
 import { IAuthor, IBook, UserProfile } from 'core/types';
-// import axios from 'axios';
-// import { serverAddress } from '../../core/config/server';
 import { format } from 'date-fns';
 import { useState } from 'react';
 import { type JSX } from 'react';
@@ -74,11 +73,20 @@ export const DashboardScreen = (): JSX.Element => {
       return;
     }
 
-    // TODO: check reservation
+    const res = await axios.post(
+      `${serverUrl}/reservation/`,
+      {
+        bookId: reservedBook.id,
+        userId: localUser.id
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
 
-    const random = Math.round(Math.random()); // TODO: this is only mockup. Remove it later.
-
-    if (random) {
+    if (res.status === 201) {
       setSnackbarMessage('Book reserved successfully!');
       setIsSnackbarOpen(true);
       setIsBorrowModalOpen(false);
@@ -162,9 +170,9 @@ export const DashboardScreen = (): JSX.Element => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {books.map((book) => {
-                    const author: IAuthor | undefined = authors.find(
-                      (_author) => _author.id === book.author.id
+                  {books?.map((book) => {
+                    const author: IAuthor | undefined = authors?.find(
+                      (_author) => _author?.id === book.author?.id
                     );
 
                     if (!filterBook(book, author, searchData)) return null;
