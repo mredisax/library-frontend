@@ -1,4 +1,5 @@
 export interface UserProfile {
+  id: string;
   email: string;
   token: string;
 }
@@ -21,5 +22,7 @@ export interface UserDatabase {
   name: string;
   lastname: string;
   email: string;
+  phone: string;
   password: string;
+  is_admin: boolean;
 }
