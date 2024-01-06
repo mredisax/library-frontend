@@ -1,3 +1,4 @@
+import { AboutScreen } from 'feature/about/presentation';
 import { AdminPanelScreen } from 'feature/adminPanel/presentation';
 import { LoginScreen, RegisterScreen } from 'feature/auth/presentation';
 import { DashboardScreen } from 'feature/dashboard/presentation';
@@ -25,18 +26,14 @@ export const browserRouter = createBrowserRouter([
     Component: RegisterScreen
   },
   {
+    path: '/about',
+    Component: AboutScreen
+  },
+  {
     path: '/admin',
     Component: () => (
       <ProtectedRoute>
         <AdminPanelScreen />
-      </ProtectedRoute>
-    )
-  },
-  {
-    path: '/about',
-    Component: () => (
-      <ProtectedRoute>
-        <div>About</div>
       </ProtectedRoute>
     )
   },

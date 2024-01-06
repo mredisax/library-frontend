@@ -1,6 +1,7 @@
 import {
   AdminPanelSettings as AdminPanelSettingsIcon,
   Home as HomeIcon,
+  Info as InfoIcon,
   Person as PersonIcon
 } from '@mui/icons-material';
 import { createTheme } from '@mui/material';
@@ -162,6 +163,16 @@ export const categories = [
   {
     id: 'Manage',
     children: [{ id: 'Admin panel', icon: <AdminPanelSettingsIcon />, to: '/admin' }]
+  },
+  {
+    id: 'Other',
+    children: [
+      {
+        id: 'About',
+        icon: <InfoIcon />,
+        to: '/about'
+      }
+    ]
   }
 ];
 

@@ -4,7 +4,7 @@ export const Copyright = () => {
   return (
     <Typography variant="body2" color="text.secondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
+      <Link color="inherit" href="/about">
         library
       </Link>{' '}
       {new Date().getFullYear()}.
