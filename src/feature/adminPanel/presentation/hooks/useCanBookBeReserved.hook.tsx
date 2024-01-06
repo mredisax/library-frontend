@@ -1,7 +1,7 @@
 import { IBook } from 'core/types';
 import { useEffect, useState } from 'react';
 
-import { getCanBookBeReserved } from '../../services/reserveBook';
+import { getCanBookBeReserved } from '../../../dashboard/services/reserveBook';
 
 export const useCanBookBeReserved = (
   book: IBook | null,
