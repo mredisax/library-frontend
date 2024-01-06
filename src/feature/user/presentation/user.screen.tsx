@@ -14,20 +14,17 @@ import {
 import { Paperbase } from 'core/paperbase/presentation';
 import { format } from 'date-fns';
 
-import { IAuthor } from '../../../core/types/author.types';
-import { useAuthorsData } from '../../dashboard/presentation/hooks/useAuthorsData.hook';
 import { useUserBookedBooks, useUserReservations } from './hooks';
 import { useUserDatabase } from './hooks/useUserDatabase';
 
 export const UserScreen = () => {
   const { userDatabase } = useUserDatabase();
 
-  const { userReservations, isLoading } = useUserReservations(userDatabase?.id?.toString() ?? '');
-
-  const { bookedBooks, isLoading: isBookedBooksLoading } = useUserBookedBooks(
+  const { userReservations, userReservationsStatus } = useUserReservations(
     userDatabase?.id?.toString() ?? ''
   );
-  const { authors } = useAuthorsData();
+
+  const { bookedBooks, bookedBooksStatus } = useUserBookedBooks(userDatabase?.id?.toString() ?? '');
 
   return (
     <Paperbase>
@@ -57,7 +54,7 @@ export const UserScreen = () => {
               Your reserved books
             </Typography>
           </Grid>
-          {isLoading ? (
+          {userReservationsStatus === 'pending' ? (
             <CircularProgress />
           ) : (
             <TableContainer>
@@ -102,25 +99,21 @@ export const UserScreen = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {userReservations.map((reservation) => {
+                  {userReservations?.map((reservation) => {
                     const { book } = reservation;
-
-                    const author: IAuthor | undefined = authors.find(
-                      (_author) => _author.id === book.author_id
-                    );
 
                     return (
                       <TableRow key={book.id}>
                         <TableCell>{book.id}</TableCell>
                         <TableCell>{book.title}</TableCell>
                         <TableCell>
-                          {author?.name} {author?.lastname}
+                          {book.author?.name} {book.author?.lastName}
                         </TableCell>
                         <TableCell>{book.year}</TableCell>
                         <TableCell>{book.category}</TableCell>
                         <TableCell>{book.isbn}</TableCell>
                         <TableCell align="right">
-                          {format(new Date(reservation.reservedUntil), 'dd MMM yyyy')}
+                          {format(new Date(reservation.reservedAt), 'dd MMM yyyy')}
                         </TableCell>
                       </TableRow>
                     );
@@ -139,7 +132,7 @@ export const UserScreen = () => {
               Your booked books
             </Typography>
           </Grid>
-          {isBookedBooksLoading ? (
+          {bookedBooksStatus === 'pending' ? (
             <CircularProgress />
           ) : (
             <TableContainer>
@@ -189,19 +182,15 @@ export const UserScreen = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {bookedBooks.map((iBooked) => {
+                  {bookedBooks?.map((iBooked) => {
                     const { book } = iBooked;
-
-                    const author: IAuthor | undefined = authors.find(
-                      (_author) => _author.id === book.author_id
-                    );
 
                     return (
                       <TableRow key={book.id}>
                         <TableCell>{book.id}</TableCell>
                         <TableCell>{book.title}</TableCell>
                         <TableCell>
-                          {author?.name} {author?.lastname}
+                          {book.author?.name} {book.author?.lastName}
                         </TableCell>
                         <TableCell>{book.year}</TableCell>
                         <TableCell>{book.category}</TableCell>

@@ -7,5 +7,4 @@ export type IReservation = {
   id: number;
   uid: string;
   reservedAt: string;
-  reservedUntil: Date;
 };

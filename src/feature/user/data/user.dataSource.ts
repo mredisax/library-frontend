@@ -3,7 +3,6 @@ import { serverUrl } from 'core/config';
 import { UserDatabase } from 'core/types';
 
 export const getUser = async (userId: string): Promise<UserDatabase> => {
-  console.log(`skurwysyn id: ${userId}`);
   const response = await axios.get(`${serverUrl}/users/${userId}`);
 
   if (response.data.statusCode === 404) {

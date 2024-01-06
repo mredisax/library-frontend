@@ -1,28 +1,25 @@
-import axios from 'axios';
-import { serverUrl } from 'core/config/config';
+import { useQuery } from '@tanstack/react-query';
 import { useLocalStorage } from 'core/localStorage/localStorage.hook';
-import { UserDatabase, UserProfile } from 'core/types';
-import { useEffect, useState } from 'react';
+import { UserProfile } from 'core/types';
+import { getUser } from 'feature/user/data/user.dataSource';
+import { useEffect } from 'react';
 
 export const useUserDatabase = () => {
-  const [userDatabase, setUserDatabase] = useState<UserDatabase | null>(null);
   const [localUser] = useLocalStorage<UserProfile | null>('user', null);
-
-  const getUser = async (userId: string): Promise<UserDatabase> => {
-    const response = await axios.get(`${serverUrl}/users/${userId}`);
-
-    if (response.data.statusCode === 404) {
-      throw new Error('User does not exist');
-    }
-
-    return response.data;
-  };
+  const {
+    data: userDatabase,
+    status: userDatabaseStatus,
+    error: userDatabaseError,
+    isFetching: isUserDatabaseFetching,
+    refetch: refetchUserDatabase
+  } = useQuery({
+    queryKey: ['userDatabase', localUser?.id],
+    queryFn: () => getUser(localUser?.id ?? '')
+  });
 
   useEffect(() => {
-    getUser(localUser?.id ?? '').then((_user) => {
-      setUserDatabase(_user);
-    });
+    refetchUserDatabase();
   }, [localUser]);
 
-  return { userDatabase };
+  return { userDatabase, userDatabaseStatus, userDatabaseError, isUserDatabaseFetching };
 };
