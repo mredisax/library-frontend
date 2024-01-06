@@ -1,3 +1,4 @@
+import { AboutScreen } from 'feature/about/presentation';
 import { LoginScreen } from 'feature/auth/presentation';
 import { DashboardScreen } from 'feature/dashboard/presentation';
 import { createBrowserRouter } from 'react-router-dom';
@@ -21,7 +22,7 @@ export const browserRouter = createBrowserRouter([
     path: '/about',
     Component: () => (
       <ProtectedRoute>
-        <div>About</div>
+        <AboutScreen />
       </ProtectedRoute>
     )
   }
