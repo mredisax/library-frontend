@@ -1,3 +1,4 @@
+import { AdminPanelScreen } from 'feature/adminPanel/presentation';
 import { LoginScreen, RegisterScreen } from 'feature/auth/presentation';
 import { DashboardScreen } from 'feature/dashboard/presentation';
 import { NotFoundScreen } from 'feature/notFound/presentation/notFound.screen';
@@ -21,6 +22,14 @@ export const browserRouter = createBrowserRouter([
   {
     path: '/register',
     Component: RegisterScreen
+  },
+  {
+    path: '/admin',
+    Component: () => (
+      <ProtectedRoute>
+        <AdminPanelScreen />
+      </ProtectedRoute>
+    )
   },
   {
     path: '/about',
