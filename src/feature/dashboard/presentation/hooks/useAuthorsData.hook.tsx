@@ -1,26 +1,52 @@
 // import axios from 'axios';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { createAuthor, getAllAuthors } from 'core/data/books/authors.dataSource';
 import { IAuthor } from 'core/types';
-import { useEffect, useState } from 'react';
-
-import { authors as mockedAuthors } from '../../data/mockedData';
+import { useEffect } from 'react';
 
 export const useAuthorsData = () => {
-  const [authors, setAuthors] = useState<Array<IAuthor>>([]);
+  const {
+    data: newAuthorData,
+    status: newAuthorStatus,
+    mutateAsync: mutateNewAuthor,
+    isPending: isNewAuthorPending
+  } = useMutation({
+    mutationKey: ['newAuthor'],
+    mutationFn: (author: IAuthor) => createAuthor(author)
+  });
+  const {
+    data: authors,
+    status: authorsStatus,
+    error: authorsError,
+    isFetching: isAuthorsFetching,
+    refetch: refetchAuthors
+  } = useQuery({
+    queryKey: ['authors'],
+    queryFn: () => getAllAuthors()
+  });
 
   const refreshAuthorsData = () => {
-    setAuthors(mockedAuthors); // TODO: Only for mockup purposes. Remove this line before production.
+    refetchAuthors();
   };
 
   useEffect(() => {
     refreshAuthorsData();
   }, []);
 
-  const addAuthor = async (firstName: string, lastName: string) => {
-    console.log(firstName, lastName);
+  useEffect(() => {
+    if (newAuthorStatus === 'success') {
+      refreshAuthorsData();
+    }
+  }, [newAuthorStatus]);
 
-    // TODO: add author to database
-    refreshAuthorsData();
+  return {
+    authors,
+    newAuthorData,
+    newAuthorStatus,
+    mutateNewAuthor,
+    isNewAuthorPending,
+    authorsStatus,
+    authorsError,
+    isAuthorsFetching
   };
-
-  return { authors, addAuthor };
 };
