@@ -2,6 +2,7 @@ export interface UserProfile {
   id: string;
   email: string;
   token: string;
+  is_admin: boolean;
 }
 
 export interface UserCredentials {

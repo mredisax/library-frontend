@@ -170,12 +170,6 @@ export const RegisterForm = ({ registerStatus, registerUser }: Props): JSX.Eleme
               </Typography>
             </Box>
           )}
-
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="caption">
-              Want to know more about us? <a href="/about">About</a>
-            </Typography>
-          </Box>
         </form>
       )}
     </Formik>

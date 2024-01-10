@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { serverUrl } from 'core/config';
-import { IBook, INewBook } from 'core/types';
+import { IBook, IBooking, INewBook } from 'core/types';
 import { IBooked } from 'feature/user/data/types/borrow';
 import { IReservation } from 'feature/user/data/types/reservation';
 
@@ -53,4 +53,42 @@ export const fetchReservations = async (id: string): Promise<IReservation[]> => 
   if (res.status === 200) return res.data;
 
   return [];
+};
+
+export const removeReservation = async (id: number): Promise<void> => {
+  const response = await axios.delete(`${serverUrl}/reservation/${id}`);
+
+  console.log(response.data);
+
+  return response.data;
+};
+
+export const returnBook = async (bookingId: number, userId: number): Promise<any> => {
+  const response = await axios.post(`${serverUrl}/booking/return`, {
+    bookingId,
+    userId
+  });
+
+  console.log(response.data);
+
+  return response.data;
+};
+
+export const getBookedBooksForUser = async (id: string): Promise<IBooking[]> => {
+  const response = await axios.get(`${serverUrl}/booking/user/${id}`);
+
+  console.log(response.data);
+
+  return response.data;
+};
+
+export const prolongueBooking = async (bookingId: number, userId: string): Promise<any> => {
+  const response = await axios.post(`${serverUrl}/booking/prolong`, {
+    bookingId,
+    userId
+  });
+
+  console.log(response.data);
+
+  return response.data;
 };

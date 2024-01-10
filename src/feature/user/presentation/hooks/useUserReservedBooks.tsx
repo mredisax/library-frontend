@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
-import { fetchReservations } from 'core/data/books';
-import { useEffect } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { fetchReservations, removeReservation } from 'core/data/books';
+import { useEffect, useState } from 'react';
 
 export const useUserReservations = (userId: string) => {
   // const [userReservations, setReservations] = useState<IReservation[]>([]);
@@ -15,6 +15,16 @@ export const useUserReservations = (userId: string) => {
     queryKey: ['userReservations', userId],
     queryFn: () => fetchReservations(userId)
   });
+  const {
+    mutateAsync: mutateCancelReservation,
+    isPending: isCancelReservationPending,
+    status: cancelReservationStatus,
+    data: cancelReservationData
+  } = useMutation({
+    mutationKey: ['cancelReservation'],
+    mutationFn: (reservationId: number) => removeReservation(reservationId)
+  });
+  const [statusMessage, setStatusMessage] = useState('');
 
   useEffect(() => {
     if (userId === '') return;
@@ -22,10 +32,23 @@ export const useUserReservations = (userId: string) => {
     refetchUserReservations();
   }, [userId]);
 
+  useEffect(() => {
+    if (cancelReservationStatus === 'success') {
+      setStatusMessage('Reservation cancelled succesfully!');
+      refetchUserReservations();
+    }
+  }, [cancelReservationStatus]);
+
   return {
     userReservations,
     userReservationsStatus,
     userReservationsError,
-    isUserReservationsFetching
+    isUserReservationsFetching,
+    refetchUserReservations,
+    mutateCancelReservation,
+    isCancelReservationPending,
+    cancelReservationStatus,
+    cancelReservationData,
+    statusMessage
   };
 };

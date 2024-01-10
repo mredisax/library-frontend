@@ -1,4 +1,5 @@
 import { IAuthor } from './author.types';
+import { UserDatabase } from './user.types';
 
 export interface INewBook {
   id?: number;
@@ -13,4 +14,13 @@ export interface INewBook {
 
 export interface IBook extends Omit<INewBook, 'author'> {
   author: IAuthor;
+}
+
+export interface IBooking {
+  id: number;
+  borrowAt: Date;
+  returnTo: Date;
+  wasReturned: boolean;
+  book: IBook;
+  user: UserDatabase;
 }

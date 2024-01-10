@@ -1,5 +1,9 @@
 import { AboutScreen } from 'feature/about/presentation';
-import { AdminPanelScreen } from 'feature/adminPanel/presentation';
+import {
+  AdminBookingsScreen,
+  AdminPanelScreen,
+  AuthorsScreen
+} from 'feature/adminPanel/presentation';
 import { LoginScreen, RegisterScreen } from 'feature/auth/presentation';
 import { DashboardScreen } from 'feature/dashboard/presentation';
 import { NotFoundScreen } from 'feature/notFound/presentation/notFound.screen';
@@ -11,6 +15,10 @@ import { ProtectedRoute } from './protectedRoute';
 export const browserRouter = createBrowserRouter([
   {
     path: '/',
+    Component: AboutScreen
+  },
+  {
+    path: '/dashboard',
     Component: () => (
       <ProtectedRoute>
         <DashboardScreen />
@@ -26,14 +34,26 @@ export const browserRouter = createBrowserRouter([
     Component: RegisterScreen
   },
   {
-    path: '/about',
-    Component: AboutScreen
-  },
-  {
     path: '/admin',
     Component: () => (
       <ProtectedRoute>
         <AdminPanelScreen />
+      </ProtectedRoute>
+    )
+  },
+  {
+    path: '/admin/authors',
+    Component: () => (
+      <ProtectedRoute>
+        <AuthorsScreen />
+      </ProtectedRoute>
+    )
+  },
+  {
+    path: '/admin/bookings',
+    Component: () => (
+      <ProtectedRoute>
+        <AdminBookingsScreen />
       </ProtectedRoute>
     )
   },

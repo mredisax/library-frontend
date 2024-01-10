@@ -35,6 +35,7 @@ export const NewAuthorModal = ({ isModalOpen, setIsModalOpen, onSubmit }: Props)
         onSubmit={async (values, { setSubmitting }) => {
           onSubmit(values);
           setSubmitting(false);
+          setIsModalOpen(false);
         }}>
         {({ values, handleChange, isSubmitting, errors, touched, submitForm }) => (
           <Box sx={modalStyle}>

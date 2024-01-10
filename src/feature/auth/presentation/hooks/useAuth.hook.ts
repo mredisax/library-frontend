@@ -36,7 +36,7 @@ export const useAuth = () => {
       // TODO: Perform a validation of the token
 
       dispatch(setUser(localUser));
-      navigate('/');
+      navigate('/dashboard');
     }
   }, []);
 
@@ -44,7 +44,7 @@ export const useAuth = () => {
     if (loginData) {
       setLocalUser(loginData);
       dispatch(setUser(loginData));
-      navigate('/');
+      navigate('/dashboard');
     }
   }, [loginData]);
 

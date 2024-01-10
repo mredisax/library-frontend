@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
+import { getUser } from 'core/data/users/user.dataSource';
 import { useLocalStorage } from 'core/localStorage/localStorage.hook';
 import { UserProfile } from 'core/types';
-import { getUser } from 'feature/user/data/user.dataSource';
 import { useEffect } from 'react';
 
 export const useUserDatabase = () => {

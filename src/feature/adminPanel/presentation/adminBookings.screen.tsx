@@ -1,4 +1,4 @@
-import { Add, Delete, Search as SearchIcon } from '@mui/icons-material';
+import { Book, KeyboardReturn, Search as SearchIcon } from '@mui/icons-material';
 import {
   AppBar,
   Button,
@@ -14,6 +14,7 @@ import {
   TableRow,
   TextField,
   Toolbar,
+  Tooltip,
   Typography
 } from '@mui/material';
 import { Paperbase } from 'core/paperbase/presentation';
@@ -22,10 +23,11 @@ import { filterBook } from 'feature/dashboard/services/filterBook';
 import { useEffect, useState } from 'react';
 import { type JSX } from 'react';
 
-import { useAuthorsData } from './hooks/useAuthorsData.hook';
+import { useBookingData } from './hooks/useBookingData.hook';
 import { useBooksData } from './hooks/useBooksData.hook';
-import { NewBookModal } from './newBookModal.component';
-import { RemoveBookModal } from './removeBookModal.component';
+import { useUserDatabase } from './hooks/useUserDatabase';
+import { NewBookingModal } from './newBookingModal.component';
+import { ReturnBookingModal } from './returnBookingModal.component';
 
 // const Loader = ({
 //   isLoading,
@@ -45,19 +47,20 @@ import { RemoveBookModal } from './removeBookModal.component';
 //   return children;
 // };
 
-export const AdminPanelScreen = (): JSX.Element => {
+export const AdminBookingsScreen = (): JSX.Element => {
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [searchData, setSearchData] = useState('');
-  const [isNewBookModalOpen, setIsNewBookModalOpen] = useState(false);
-  const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
-  const [bookToRemove, setBookToRemove] = useState<IBook | undefined>();
-  const { books, mutateNewBook, mutateRemoveBook } = useBooksData();
-  const { authors } = useAuthorsData();
+  const [selectedBook, setSelectedBook] = useState<undefined | IBook>();
+  const [isNewBookingModalOpen, setIsNewBookingModalOpen] = useState(false);
+  const [isReturnBookingModalOpen, setIsReturnBookingModalOpen] = useState(false);
+  const { books } = useBooksData();
+  const { mutateCreateBooking, statusMessage, mutateReturnBook } = useBookingData();
+  const { usersData } = useUserDatabase();
 
   useEffect(() => {
-    setSnackbarMessage('Book reserved successfully!');
-  }, []);
+    setSnackbarMessage(statusMessage);
+  }, [statusMessage]);
 
   return (
     <>
@@ -76,7 +79,7 @@ export const AdminPanelScreen = (): JSX.Element => {
                 <Grid item xs>
                   <TextField
                     fullWidth
-                    placeholder="Search through books by title, author or ISBN"
+                    placeholder="Search through reservations by title, author or ISBN"
                     InputProps={{
                       disableUnderline: true,
                       sx: { fontSize: 'default' }
@@ -89,10 +92,21 @@ export const AdminPanelScreen = (): JSX.Element => {
                   />
                 </Grid>
                 <Grid item>
-                  <Button onClick={() => setIsNewBookModalOpen(true)}>
-                    <Add fontSize="small" sx={{ mr: 1 }} />
-                    <Typography variant="button">ADD BOOK</Typography>
-                  </Button>
+                  <Tooltip title="Reload">
+                    <Button
+                      onClick={() => {
+                        setIsReturnBookingModalOpen(true);
+                      }}>
+                      <KeyboardReturn
+                        color="inherit"
+                        fontSize="small"
+                        sx={{ display: 'block', mr: 1 }}
+                      />
+                      <Typography variant="caption" color="inherit">
+                        RETURN
+                      </Typography>
+                    </Button>
+                  </Tooltip>
                 </Grid>
               </Grid>
             </Toolbar>
@@ -147,13 +161,15 @@ export const AdminPanelScreen = (): JSX.Element => {
                         <TableCell>{book.category}</TableCell>
                         <TableCell>{book.isbn}</TableCell>
                         <TableCell>
-                          <IconButton
-                            onClick={() => {
-                              setIsRemoveModalOpen(true);
-                              setBookToRemove(book);
-                            }}>
-                            <Delete />
-                          </IconButton>
+                          <Tooltip title="Create booking">
+                            <IconButton
+                              onClick={() => {
+                                setSelectedBook(book);
+                                setIsNewBookingModalOpen(true);
+                              }}>
+                              <Book />
+                            </IconButton>
+                          </Tooltip>
                         </TableCell>
                       </TableRow>
                     );
@@ -164,23 +180,36 @@ export const AdminPanelScreen = (): JSX.Element => {
           </Grid>
         </Paper>
       </Paperbase>
-      <NewBookModal
-        authors={authors}
-        isModalOpen={isNewBookModalOpen}
-        setIsModalOpen={setIsNewBookModalOpen}
-        onSubmit={mutateNewBook}
-      />
-      <RemoveBookModal
-        isModalOpen={isRemoveModalOpen}
-        setIsModalOpen={setIsRemoveModalOpen}
-        bookToRemove={bookToRemove}
-        onSubmit={mutateRemoveBook}
-      />
       <Snackbar
         open={isSnackbarOpen}
         autoHideDuration={6000}
         onClose={() => setIsSnackbarOpen(false)}
         message={snackbarMessage}
+      />
+      <NewBookingModal
+        isModalOpen={isNewBookingModalOpen}
+        setIsModalOpen={setIsNewBookingModalOpen}
+        book={selectedBook}
+        users={usersData}
+        onSubmit={async (user, book) => {
+          await mutateCreateBooking({
+            book,
+            user
+          });
+          setIsSnackbarOpen(true);
+        }}
+      />
+      <ReturnBookingModal
+        isModalOpen={isReturnBookingModalOpen}
+        setIsModalOpen={setIsReturnBookingModalOpen}
+        users={usersData}
+        onSubmit={async (userId, bookingId) => {
+          await mutateReturnBook({
+            bookingId,
+            userId
+          });
+          setIsSnackbarOpen(true);
+        }}
       />
     </>
   );

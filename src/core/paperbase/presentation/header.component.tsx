@@ -1,10 +1,8 @@
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { AppBar, Avatar, Grid, IconButton, Link, Menu, MenuItem, Toolbar } from '@mui/material';
+import { AppBar, Avatar, Grid, IconButton, Menu, MenuItem, Toolbar } from '@mui/material';
 import { useRef, useState } from 'react';
 
 import { useLocalUser } from './hooks/useLocalUser.hook';
-
-const lightColor = 'rgba(255, 255, 255, 0.7)';
 
 interface Props {
   onDrawerToggle: () => void;
@@ -29,22 +27,6 @@ export const Header = ({ onDrawerToggle }: Props) => {
             </IconButton>
           </Grid>
           <Grid item xs />
-          <Grid item>
-            <Link
-              href="/"
-              variant="body2"
-              sx={{
-                textDecoration: 'none',
-                color: lightColor,
-                '&:hover': {
-                  color: 'common.white'
-                }
-              }}
-              rel="noopener noreferrer"
-              target="_blank">
-              Regulamin
-            </Link>
-          </Grid>
           {localUser && (
             <Grid item>
               <IconButton

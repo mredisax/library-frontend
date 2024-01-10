@@ -1,6 +1,6 @@
 // import axios from 'axios';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { createAuthor, getAllAuthors } from 'core/data/books/authors.dataSource';
+import { createAuthor, getAllAuthors, removeAuthor } from 'core/data/books/authors.dataSource';
 import { IAuthor } from 'core/types';
 import { useEffect } from 'react';
 
@@ -13,6 +13,15 @@ export const useAuthorsData = () => {
   } = useMutation({
     mutationKey: ['newAuthor'],
     mutationFn: (author: IAuthor) => createAuthor(author)
+  });
+  const {
+    data: removeAuthorData,
+    status: removeAuthorStatus,
+    mutateAsync: mutateRemoveAuthor,
+    isPending: isRemoveAuthorPending
+  } = useMutation({
+    mutationKey: ['removeAuthor'],
+    mutationFn: (author: IAuthor) => removeAuthor(author.id ?? -1)
   });
   const {
     data: authors,
@@ -34,10 +43,10 @@ export const useAuthorsData = () => {
   }, []);
 
   useEffect(() => {
-    if (newAuthorStatus === 'success') {
+    if (newAuthorStatus === 'success' || removeAuthorStatus === 'success') {
       refreshAuthorsData();
     }
-  }, [newAuthorStatus]);
+  }, [newAuthorStatus, removeAuthorStatus]);
 
   return {
     authors,
@@ -47,6 +56,11 @@ export const useAuthorsData = () => {
     isNewAuthorPending,
     authorsStatus,
     authorsError,
-    isAuthorsFetching
+    isAuthorsFetching,
+    refreshAuthorsData,
+    removeAuthorData,
+    removeAuthorStatus,
+    mutateRemoveAuthor,
+    isRemoveAuthorPending
   };
 };

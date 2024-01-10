@@ -87,12 +87,6 @@ export const LoginForm = ({ loginStatus, loginUser }: Props): JSX.Element => {
               Don&apos;t have an account? <a href="/register">Register</a>
             </Typography>
           </Box>
-
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="caption">
-              Want to know more about us? <a href="/about">About</a>
-            </Typography>
-          </Box>
         </form>
       )}
     </Formik>

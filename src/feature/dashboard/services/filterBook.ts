@@ -11,3 +11,14 @@ export const filterBook = (book: IBook, author: IAuthor | undefined, filter: str
 
   return false;
 };
+
+export const filterAuthor = (author: IAuthor, filter: string): boolean => {
+  if (filter === '') return true;
+
+  const filterLower = filter.toLowerCase();
+
+  if (author.name.toLowerCase().includes(filterLower)) return true;
+  if (author.lastName.toLowerCase().includes(filterLower)) return true;
+
+  return false;
+};

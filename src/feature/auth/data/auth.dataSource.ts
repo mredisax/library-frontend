@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { serverUrl } from 'core/config';
+import { parseJwt } from 'core/data/users/user.dataSource';
 import { UserCredentials, UserProfile, UserRegisterCredentials } from 'core/types';
 
 export const login = async ({ email, password }: UserCredentials): Promise<UserProfile> => {
@@ -15,7 +16,8 @@ export const login = async ({ email, password }: UserCredentials): Promise<UserP
   return {
     id: response.data.userId,
     email,
-    token: response.data.access_token
+    token: response.data.access_token,
+    is_admin: parseJwt(response.data.access_token).is_admin
   };
 };
 

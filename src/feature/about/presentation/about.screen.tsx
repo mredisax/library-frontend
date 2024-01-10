@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { type JSX } from 'react';
 
 const Hero = styled.div({
@@ -64,6 +64,16 @@ export const AboutScreen = (): JSX.Element => {
       <Hero>
         <h1 style={{ textAlign: 'center' }}>Biblioteka Krakowska nr. 52</h1>
         <h3 style={{ textAlign: 'center' }}>im. Politechnikusa Krakusa</h3>
+
+        <Box sx={{ mt: 2 }}>
+          <Button variant="contained" color="secondary" href="/login" sx={{ mr: 2 }}>
+            Login
+          </Button>
+
+          <Button variant="contained" color="secondary" href="/register" sx={{ ml: 2 }}>
+            Register
+          </Button>
+        </Box>
       </Hero>
       <Box sx={{ mx: 8 }}>
         <div>

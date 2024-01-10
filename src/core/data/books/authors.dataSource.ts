@@ -23,3 +23,11 @@ export const createAuthor = async (author: IAuthor): Promise<IAuthor> => {
 
   return response.data;
 };
+
+export const removeAuthor = async (id: number): Promise<void> => {
+  const res = await axios.delete(`${serverUrl}/author/${id}`);
+
+  console.log(res);
+
+  return res.data;
+};

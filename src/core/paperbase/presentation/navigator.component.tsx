@@ -12,6 +12,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 import { categories, itemCategoryStyle, itemStyle } from '../data';
+import { useLocalUser } from './hooks/useLocalUser.hook';
 
 interface Props {
   PaperProps?: React.ComponentProps<typeof Drawer>['PaperProps'];
@@ -23,6 +24,7 @@ interface Props {
 
 export const Navigator = ({ PaperProps, open, onClose, sx, variant = 'permanent' }: Props) => {
   const location = useLocation();
+  const { localUser } = useLocalUser();
 
   return (
     <Drawer variant={variant} PaperProps={PaperProps} open={open} onClose={onClose} sx={sx}>
@@ -30,24 +32,32 @@ export const Navigator = ({ PaperProps, open, onClose, sx, variant = 'permanent'
         <ListItem sx={{ ...itemStyle, ...itemCategoryStyle, fontSize: 22, color: '#fff' }}>
           Library
         </ListItem>
-        {categories.map(({ id, children }) => (
-          <Box key={id} sx={{ bgcolor: '#101F33' }}>
-            <ListItem sx={{ py: 2, px: 3 }}>
-              <ListItemText sx={{ color: '#fff' }}>{id}</ListItemText>
-            </ListItem>
-            {children.map(({ id: childId, icon, to }) => (
-              <Link to={to} style={{ textDecoration: 'none' }} key={childId}>
-                <ListItem disablePadding>
-                  <ListItemButton selected={location.pathname === to} sx={itemStyle}>
-                    <ListItemIcon>{icon}</ListItemIcon>
-                    <ListItemText>{childId}</ListItemText>
-                  </ListItemButton>
-                </ListItem>
-              </Link>
-            ))}
-            <Divider sx={{ mt: 2 }} />
-          </Box>
-        ))}
+        {categories
+          .filter((val) => {
+            if (localUser?.is_admin) {
+              return true;
+            }
+
+            return !val.admin_only;
+          })
+          .map(({ id, children }) => (
+            <Box key={id} sx={{ bgcolor: '#101F33' }}>
+              <ListItem sx={{ py: 2, px: 3 }}>
+                <ListItemText sx={{ color: '#fff' }}>{id}</ListItemText>
+              </ListItem>
+              {children.map(({ id: childId, icon, to }) => (
+                <Link to={to} style={{ textDecoration: 'none' }} key={childId}>
+                  <ListItem disablePadding>
+                    <ListItemButton selected={location.pathname === to} sx={itemStyle}>
+                      <ListItemIcon>{icon}</ListItemIcon>
+                      <ListItemText>{childId}</ListItemText>
+                    </ListItemButton>
+                  </ListItem>
+                </Link>
+              ))}
+              <Divider sx={{ mt: 2 }} />
+            </Box>
+          ))}
       </List>
     </Drawer>
   );
